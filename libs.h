@@ -1,9 +1,15 @@
 #pragma once
 
+#include "BadResponseBuilder.h"
 #include "Command.h"
+#include "EchoResponseBuilder.h"
+#include "EmptyResponseBuilder.h"
+#include "FileGetResponseBuilder.h"
+#include "FilePostResponseBuilder.h"
 #include "HttpServer.h"
 #include "Request.h"
 #include "RequestType.h"
 #include "Response.h"
 #include "ResponseBuilder.h"
 #include "ResponseFactory.h"
+#include "UserAgentResponseBuilder.h"

@@ -26,4 +26,5 @@ struct Response {
   std::string body;
   ResponseType type = OK;
   std::string content_type = "text/plain";
+  bool keep_alive = true;
 };

@@ -10,6 +10,13 @@
 #include <string>
 #include <unordered_map>
 
+#include "BadResponseBuilder.h"
+#include "EchoResponseBuilder.h"
+#include "EmptyResponseBuilder.h"
+#include "FileGetResponseBuilder.h"
+#include "FilePostResponseBuilder.h"
+#include "UserAgentResponseBuilder.h"
+
 class ResponseBuilderFactory {
 private:
   using BuilderCreator = std::function<std::unique_ptr<ResponseBuilder>()>;

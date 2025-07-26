@@ -5,7 +5,7 @@ int main(int argc, char **argv) {
   std::cerr << std::unitbuf;
 
   std::optional<std::string> dir;
-  if (argc >= 3 && strcmp(argv[1], "--directory") == 0) {
+  if (argc == 3 && strcmp(argv[1], "--directory") == 0) {
     dir = argv[2];
   }
   HttpServer server(4221, dir);
@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
       continue;
     }
     // server.handleClientRequest(client_fd);
+
     std::thread(&HttpServer::handleClientRequest, &server, client_fd).detach();
   }
 }

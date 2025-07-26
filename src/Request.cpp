@@ -6,7 +6,8 @@ Request::Request(const std::string &request,
     : req(request), reqType(getRequestType(req)),
       requestLineParts(parseRequest(request)),
       headCommand(determineHead(canHandleFiles)),
-      requestBody(extractRequestBody(request)) {}
+      requestBody(extractRequestBody(request)),
+      requestHeaders(extractHeaders(request)) {}
 
 const RequestType Request::getRequestType(const std::string &req) {
   auto firstSlash = req.find("/");
@@ -95,3 +96,44 @@ Request::determineHead(const std::optional<bool> &canHandleFiles) {
 
   return FAIL;
 }
+
+const std::unordered_map<std::string, std::string>
+Request::extractHeaders(const std::string &req) {
+  std::unordered_map<std::string, std::string> headers;
+
+  size_t start_pos = req.find("\r\n") + 2;
+  size_t end_pos = req.find("\r\n\r\n");
+
+  if (end_pos == std::string::npos) {
+    end_pos = req.length();
+  }
+
+  std::string headers_block = req.substr(start_pos, end_pos - start_pos);
+  size_t line_start = 0;
+
+  while (line_start < headers_block.length()) {
+    size_t line_end = headers_block.find("\r\n", line_start);
+    if (line_end == std::string::npos) {
+      line_end = headers_block.length();
+    }
+
+    std::string header_line =
+        headers_block.substr(line_start, line_end - line_start);
+    size_t colon_pos = header_line.find(':');
+
+    if (colon_pos != std::string::npos) {
+      std::string key = header_line.substr(0, colon_pos);
+      std::string value = header_line.substr(colon_pos + 1);
+
+      key.erase(0, key.find_first_not_of(" \t"));
+      key.erase(key.find_last_not_of(" \t") + 1);
+      value.erase(0, value.find_first_not_of(" \t"));
+      value.erase(value.find_last_not_of(" \t") + 1);
+
+      headers[key] = value;
+    }
+
+    line_start = line_end + 2;
+  }
+  return headers;
+};
