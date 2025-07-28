@@ -11,3 +11,14 @@ ______________________________
 5) https
 6) authentification
 7) 
+
+
+# Реализация примитивного Http сервера
+
+
+## Запуск
+mkdir build && cd build
+cmake ..
+make
+./server
+

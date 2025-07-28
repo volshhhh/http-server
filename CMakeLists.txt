@@ -4,6 +4,16 @@ project(server)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+
+FetchContent_Declare(
+    magic_enum
+    GIT_REPOSITORY https://github.com/Neargye/magic_enum.git
+    GIT_TAG v0.9.3
+)
+
+FetchContent_MakeAvailable(magic_enum)
+
 include_directories(
     headers/
     headers/entity
@@ -17,3 +27,5 @@ file(GLOB SOURCES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE magic_enum::magic_enum)
