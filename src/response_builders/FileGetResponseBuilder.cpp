@@ -4,7 +4,7 @@ Response FileGetResponseBuilder::build(const Request &req,
                                        const std::optional<std::string> &dir) {
 
   std::string filename =
-      req.requestLineParts.size() > 1 ? req.requestLineParts[1] : "";
+      req.getLineParts().size() > 1 ? req.getLineParts()[1] : "";
 
   if (!dir.has_value()) {
     return {"", Internal_Server_Error};

@@ -29,7 +29,6 @@ private:
   ResponseBuilderFactory factory;
 
   void cleanup();
-  std::string build_response(Response &rsp);
 
 public:
   explicit HttpServer(int port, std::optional<std::string> dir_ = std::nullopt);

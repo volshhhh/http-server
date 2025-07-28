@@ -1,15 +1,15 @@
 #include "Request.h"
+#include "Command.h"
+#include "RequestType.h"
 #include <iostream>
 
 Request::Request(const std::string &request,
                  const std::optional<bool> canHandleFiles)
-    : req(request), reqType(getRequestType(req)),
-      requestLineParts(parseRequest(request)),
-      headCommand(determineHead(canHandleFiles)),
-      requestBody(extractRequestBody(request)),
-      requestHeaders(extractHeaders(request)) {}
+    : type_(extractType(request)), lineParts_(extractLineParts(request)),
+      headCommand_(extractHead(canHandleFiles)), body_(extractBody(request)),
+      headers_(extractHeaders(request)) {}
 
-const RequestType Request::getRequestType(const std::string &req) {
+const RequestType Request::extractType(const std::string &req) {
   auto firstSlash = req.find("/");
   std::string reqType = req.substr(0, firstSlash - 1);
 
@@ -20,7 +20,8 @@ const RequestType Request::getRequestType(const std::string &req) {
   return RequestType::GET;
 }
 
-const std::vector<std::string> Request::parseRequest(const std::string &req) {
+const std::vector<std::string>
+Request::extractLineParts(const std::string &req) {
   auto begin = req.find("/") + 1;
   auto end = req.find("HTTP");
   std::string curr;
@@ -41,7 +42,7 @@ const std::vector<std::string> Request::parseRequest(const std::string &req) {
   return parts;
 }
 
-std::string Request::extractRequestBody(const std::string &rawRequest) {
+std::string Request::extractBody(const std::string &rawRequest) {
   size_t headerEnd = rawRequest.find("\r\n\r\n");
   if (headerEnd == std::string::npos) {
     return "";
@@ -65,36 +66,35 @@ std::string Request::extractRequestBody(const std::string &rawRequest) {
   return body;
 }
 
-const Command
-Request::determineHead(const std::optional<bool> &canHandleFiles) {
-  if (requestLineParts.empty()) {
+const Command Request::extractHead(const std::optional<bool> &canHandleFiles) {
+  if (lineParts_.empty()) {
     std::cout << "EMPTYY" << std::endl;
-    return EMPTY;
+    return Command::EMPTY;
   }
-  std::string strHead = requestLineParts[0];
+  std::string strHead = lineParts_[0];
 
   if (strHead == "echo") {
     std::cout << "ECHOOO" << std::endl;
-    return ECHO;
+    return Command::ECHO;
 
   } else if (strHead == "user-agent") {
     std::cout << "USER-AGENT" << std::endl;
-    return USER_AGENT;
+    return Command::USER_AGENT;
 
   } else if (canHandleFiles.has_value() && canHandleFiles.value() &&
              strHead == "files") {
 
-    if (reqType == GET) {
+    if (type_ == RequestType::GET) {
       std::cout << "GET-FILES" << std::endl;
-      return GET_FILES;
+      return Command::GET_FILES;
     }
     std::cout << "POST-FILES" << std::endl;
-    return POST_FILES;
+    return Command::POST_FILES;
   }
 
   std::cout << "FAIL" << std::endl;
 
-  return FAIL;
+  return Command::FAIL;
 }
 
 const std::unordered_map<std::string, std::string>

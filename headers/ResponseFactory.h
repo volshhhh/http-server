@@ -20,11 +20,9 @@
 class ResponseBuilderFactory {
 private:
   using BuilderCreator = std::function<std::unique_ptr<ResponseBuilder>()>;
-  std::unordered_map<Command, BuilderCreator> builders_;
+  std::unordered_map<const Command, BuilderCreator> builders_;
 
   void registerBuilder(Command cmd, BuilderCreator creator);
-
-  std::unique_ptr<ResponseBuilder> create(const Request &req);
 
   std::optional<std::string> fileDir;
 

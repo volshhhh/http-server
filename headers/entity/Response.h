@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Request.h"
 #include <string>
+#include <vector>
 
 enum ResponseType {
   OK = 200,
@@ -9,22 +11,40 @@ enum ResponseType {
   Internal_Server_Error = 500
 };
 
-inline std::string to_string(ResponseType type) {
-  switch (type) {
-  case ResponseType::OK:
-    return "200 OK\r\n";
-  case ResponseType::Not_Found:
-    return "404 Not Found\r\n";
-  case ResponseType::Internal_Server_Error:
-    return "500 Internal Error\r\n";
-  default:
-    return "Unknown\r\n";
-  }
-}
+enum ResponseHeader {
+  Content_Encoding,
+  Content_Type,
+  Content_Lenght,
+  Connection,
 
+  ENUM_SIZE // dummy element
+};
+
+// TODO: addHeader logic (also cheeck contect encoding)
 struct Response {
-  std::string body;
-  ResponseType type = OK;
-  std::string content_type = "text/plain";
-  bool keep_alive = true;
+  std::string body_;
+  ResponseType type_;
+  std::string contentType_;
+  bool keepAlive_;
+
+  Response(const std::string &body, ResponseType type,
+           const std::string &contentType = "text/plain", bool keepAlive = true)
+      : presentHeaders(ResponseHeader::ENUM_SIZE, false), body_(body),
+        type_(type), contentType_(contentType), keepAlive_(keepAlive) {
+
+    addHeader(ResponseHeader::Content_Type);
+    addHeader(ResponseHeader::Connection);
+    if (type_ == ResponseType::Not_Found) {
+      canAddHeader = false;
+    }
+    addHeader(ResponseHeader::Content_Lenght);
+  };
+
+  const std::string to_string();
+
+private:
+  std::vector<bool> presentHeaders;
+  bool canAddHeader = true;
+
+  void addHeader(ResponseHeader header);
 };

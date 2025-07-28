@@ -2,11 +2,11 @@
 
 Response FilePostResponseBuilder::build(const Request &req,
                                         const std::optional<std::string> &dir) {
-  if (req.requestLineParts.size() == 1) {
+  if (req.getLineParts().size() == 1) {
     return {"", Not_Found};
   }
-  const std::string content = req.requestBody;
-  const std::string filename = req.requestLineParts[1];
+  const std::string content = req.getBody();
+  const std::string filename = req.getLineParts()[1];
 
   if (!dir.has_value()) {
     return {"", Internal_Server_Error};

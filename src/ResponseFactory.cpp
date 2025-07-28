@@ -32,15 +32,10 @@ ResponseBuilderFactory::ResponseBuilderFactory(std::optional<std::string> &dir)
                   []() { return std::make_unique<BadResponseBuilder>(); });
 }
 
-std::unique_ptr<ResponseBuilder>
-ResponseBuilderFactory::create(const Request &req) {
-
-  auto it = builders_.find(req.headCommand);
-  return it->second();
-}
-
 Response
 ResponseBuilderFactory::getResponse(const Request &req,
                                     const std::optional<std::string> &dir) {
-  return create(req)->build(req, dir);
+
+  auto it = builders_.find(req.getHeadCommand());
+  return (it->second())->build(req, dir);
 }
