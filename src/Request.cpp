@@ -67,34 +67,11 @@ std::string Request::extractBody(const std::string &rawRequest) {
 }
 
 const Command Request::extractHead(const std::optional<bool> &canHandleFiles) {
-  if (lineParts_.empty()) {
-    std::cout << "EMPTYY" << std::endl;
-    return Command::EMPTY;
+  std::string cmd = (lineParts_.size() > 0) ? lineParts_[0] : "";
+  if (cmd == "files" && !canHandleFiles) {
+    return Command::FAIL;
   }
-  std::string strHead = lineParts_[0];
-
-  if (strHead == "echo") {
-    std::cout << "ECHOOO" << std::endl;
-    return Command::ECHO;
-
-  } else if (strHead == "user-agent") {
-    std::cout << "USER-AGENT" << std::endl;
-    return Command::USER_AGENT;
-
-  } else if (canHandleFiles.has_value() && canHandleFiles.value() &&
-             strHead == "files") {
-
-    if (type_ == RequestType::GET) {
-      std::cout << "GET-FILES" << std::endl;
-      return Command::GET_FILES;
-    }
-    std::cout << "POST-FILES" << std::endl;
-    return Command::POST_FILES;
-  }
-
-  std::cout << "FAIL" << std::endl;
-
-  return Command::FAIL;
+  return convertToCommand(type_, cmd);
 }
 
 const std::unordered_map<std::string, std::string>
