@@ -2,10 +2,10 @@
 
 #include "Command.h"
 #include "RequestType.h"
-#include <iostream>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class Request {
@@ -28,6 +28,7 @@ private:
   const std::vector<std::string> lineParts_;
   const Command headCommand_;
   const std::string body_;
+
   const std::unordered_map<std::string, std::string> headers_;
 
   const RequestType extractType(const std::string &req);

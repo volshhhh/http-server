@@ -1,7 +1,6 @@
 #include "Request.h"
 #include "Command.h"
 #include "RequestType.h"
-#include <iostream>
 
 Request::Request(const std::string &request,
                  const std::optional<bool> canHandleFiles)

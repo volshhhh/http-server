@@ -42,13 +42,14 @@ enum class Command {
 ```
 
 **Формат имени команды в запросе:**
+**❗ Важно!** (так как используется функционал `magic_enum.hpp` для более удобной конвертации команд в строку)
 ```
 [RequestType]_UPPER_CASE_NAME
 ```
 Где:
 - `RequestType` (опционально) - GET/POST
 - `UPPER_CASE_NAME` - имя команды в верхнем регистре с подчёркиваниями вместо дефисов
-(так как используется функционал `magic_enum.hpp` для более удобной конвертации команд в строку)
+
 **Примеры допустимых команд:**
 ```
 GET_USER_STATUS
@@ -61,14 +62,10 @@ POST_UPDATE_SETTINGS
 ```cpp
 class NewResponseBuilder : public ResponseBuilder {
 public:
-    HttpResponse build(const HttpRequest& request,
+    Response build(const Request& req,
                       const std::optional<std::string>& dir = std::nullopt) override 
     {
         // Ваша реализация обработки запроса
-        HttpResponse response;
-        response.setStatus(HttpStatus::OK);
-        response.setBody("Response data");
-        return response;
     }
 };
 ```

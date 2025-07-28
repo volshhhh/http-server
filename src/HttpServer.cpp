@@ -64,12 +64,7 @@ void HttpServer::handleClientRequest(int client_fd) {
     Request req(httpReq, canHandleFiles);
     Response rsp = factory.getResponse(req, dir);
 
-    keepAlive =
-        !(req.getHeaders().find("Connection") != req.getHeaders().end() &&
-          req.getHeaders().at("Connection") == "close");
-
-    rsp.keepAlive_ = keepAlive;
-
+    keepAlive = rsp.keepAlive();
     std::string response = rsp.to_string();
     send(client_fd, response.c_str(), response.size(), 0);
 
