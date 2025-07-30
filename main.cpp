@@ -1,8 +1,12 @@
+#include "ResponseType.h"
 #include "libs.h"
 
 int main(int argc, char **argv) {
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
+
+  ResponseType tt = ResponseType::Created;
+  // std::cout << magic_enum::enum_name(tt) << std::endl;
 
   std::optional<std::string> dir;
   if (argc == 3 && strcmp(argv[1], "--directory") == 0) {
